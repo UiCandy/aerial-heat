@@ -9,7 +9,7 @@ import { Link, Switch, Route } from 'react-router-dom';
 
 import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux';
 
-import { Card, Container, Grid, Input } from 'semantic-ui-react';
+import { Card, Container, Grid, Header, Input } from 'semantic-ui-react';
 import * as actions from './actions';
 import { reducer } from './reducer';
 import api from './api';
@@ -55,10 +55,17 @@ class Countries extends React.Component {
 
     return (
       <Container>
-        <Input icon="search" placeholder="Search..."
-             onChange={this.searchQuery}
-        />
+        <Header dividing={true}>
+          <h1>&#x1F680; Aerial Heat</h1>
+        </Header>
+        
         <Grid columns={4}>
+          <Grid.Column>
+            <Card>
+              <Input icon="search" className="search" placeholder="Search..."
+                onChange={this.searchQuery} />  
+            </Card>
+          </Grid.Column>
           {countries.map((country, i) => {
             return (
             <Grid.Column key={i}>

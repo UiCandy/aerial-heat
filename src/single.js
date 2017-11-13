@@ -21,9 +21,7 @@ class CountryDetail extends React.Component {
         return(
             <Container>
                 <Header dividing={true}>
-                    <Header.Content>
-                        <h1><Flag name={country.alpha2Code.toLowerCase()} />{country.name}</h1>
-                    </Header.Content>
+                    <h1><Flag name={country.alpha2Code.toLowerCase()} />{country.name}</h1>
                 </Header>
             </Container>
         )
