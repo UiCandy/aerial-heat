@@ -1,0 +1,18 @@
+@import '//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css';
+
+.input{
+	padding: 2rem 0;
+	width: 23%;
+}
+
+a {
+	color: #735ba5;
+}
+
+a:hover{
+	color: #333;
+}
+
+.ui.header{
+	padding: 1em 0;
+}
