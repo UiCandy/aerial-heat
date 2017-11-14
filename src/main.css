@@ -1,20 +1,23 @@
 @import '//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css';
-
 .ui.grid {
-    padding: 1rem 0;
+    position: relative;
 }
 
-.column:first-child .card {
-    box-shadow: 0 1px 3px 0 #d9d2e8, 0 0 0 1px #d9d2e8;
+.search .card {
+    box-shadow: 0 1px 3px 0 #9e8ec1, 0 0 0 1px #9e8ec1;
 }
 
-.ui.search {
+.search .input {
     padding: 0;
 }
 
-.ui.search input {
+.search .input input{
     padding: 14px;
     box-shadow: 0 0 0;
+}
+
+.ui.card:hover{
+    cursor: pointer;
 }
 
 a {
@@ -27,5 +30,5 @@ a:hover {
 
 .ui.header {
     padding: 1em 0 0;
-    margin-bottom: 0;
+    margin-bottom: 1em;
 }

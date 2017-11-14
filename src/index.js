@@ -1,27 +1,27 @@
 import React from 'react';
 import { render } from 'react-dom';
 import PropTypes from 'prop-types';
-import { createStore, applyMiddleware } from 'redux';
+import { applyMiddleware, bindActionCreators, createStore } from 'redux';
 import { createEpicMiddleware } from 'redux-observable';
 import { connect, Provider } from 'react-redux';
+import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
 import { Link, Switch, Route } from 'react-router-dom';
+import Rx from 'rxjs';
 
-import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux';
-
-import { Card, Container, Grid, Header, Input } from 'semantic-ui-react';
+import { Card, Container, Dimmer, Grid, Header, Input, Loader } from 'semantic-ui-react';
+import initialState from './initialState';
 import * as actions from './actions';
 import { reducer } from './reducer';
 import api from './api';
 import CountryDetail from './single';
-import Rx from 'rxjs';
 
 const history = createHistory();
 
 const epicMiddleware = createEpicMiddleware(actions.getDataEpic);
 const store = createStore(
   reducer,
-  { isLoading: false, isError: false, countries: [], flights: [] },
+  initialState,
   applyMiddleware(epicMiddleware)
 );
 
@@ -32,12 +32,12 @@ class Countries extends React.Component {
   }
 
   componentDidMount() {
-    const { getDataRequested } = this.props;
-    getDataRequested();
+    const { getDataRequested, getFilteredList } = this.props.actions;
+    getDataRequested(api.countries);
 
     this.subscription = this.onSearch$
       .debounceTime(300)
-      .subscribe(debounced => console.log(debounced));
+      .subscribe(debounced => getFilteredList(this.props.countries, debounced));
   }
 
   componentWillUnmount() {
@@ -60,25 +60,28 @@ class Countries extends React.Component {
         </Header>
         
         <Grid columns={4}>
-          <Grid.Column>
+          <Grid.Column className="search">
             <Card>
-              <Input icon="search" className="search" placeholder="Search..."
+              <Input icon="search" placeholder="Search..."
                 onChange={this.searchQuery} />  
             </Card>
           </Grid.Column>
           {countries.map((country, i) => {
             return (
-            <Grid.Column key={i}>
-              <Card>
-                <Card.Content>
-                  <Link to={`${country.alpha2Code}/${country.name}`}>
-                    {country.name}, {country.alpha2Code}
-                  </Link>
-                </Card.Content>
-              </Card>
-            </Grid.Column>
+              <Grid.Column key={i}>
+                <Card>
+                  <Card.Content>
+                    <Link to={`/${country.alpha2Code}/${country.name}`}>
+                      {country.name}, {country.alpha2Code}
+                    </Link>
+                  </Card.Content>
+                </Card>
+              </Grid.Column>
             );
           })}
+          <Dimmer active={isLoading} inverted>
+            <Loader />
+          </Dimmer>
         </Grid>   
      </Container>
 
@@ -87,12 +90,16 @@ class Countries extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  return state;
+  return {
+    countries: state.dataReducer.countries,
+    filtered: state.filterReducer.filtered,
+    isLoading: state.dataReducer.isLoading
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getDataRequested: () => dispatch(actions.getDataRequested(api.countries))
+    actions: bindActionCreators(actions, dispatch)
   }
 };
 
@@ -104,6 +111,7 @@ render(
       <Switch>
         <Route exact path="/" component={Countries} />
         <Route path="/:code/:name" component={CountryDetail} />
+        <Route path="*" component={CountryDetail} />
       </Switch>
     </ConnectedRouter>
   </Provider>
