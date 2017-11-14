@@ -7,6 +7,7 @@ import { connect, Provider } from 'react-redux';
 import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
 import { Link, Switch, Route } from 'react-router-dom';
+import { createSelector } from 'reselect';
 import Rx from 'rxjs';
 
 import { Card, Container, Dimmer, Grid, Header, Input, Loader } from 'semantic-ui-react';
@@ -37,7 +38,7 @@ class Countries extends React.Component {
 
     this.subscription = this.onSearch$
       .debounceTime(300)
-      .subscribe(debounced => getFilteredList(this.props.countries, debounced));
+      .subscribe(debounced => getFilteredList(debounced));
   }
 
   componentWillUnmount() {
@@ -89,11 +90,20 @@ class Countries extends React.Component {
   }
 }
 
+const filteredList = createSelector(
+  (state) => state.filterReducer.filter.toLowerCase(),
+  (state) => state.dataReducer.countries,
+  (filter, countries) => countries.filter(country => {
+    return country.name.toLowerCase().includes(filter) ||
+          country.alpha2Code.toLowerCase().includes(filter);
+  })
+);
+
 const mapStateToProps = (state) => {
   return {
-    countries: state.dataReducer.countries,
-    filtered: state.filterReducer.filtered,
-    isLoading: state.dataReducer.isLoading
+    countries: filteredList(state),
+    isLoading: state.dataReducer.isLoading,
+    filter: state.filterReducer.filter
   };
 };
 

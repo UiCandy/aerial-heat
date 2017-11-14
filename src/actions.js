@@ -38,19 +38,11 @@ export function getDataFailed(error) {
   };
 }
 
-export function getFilteredList(data, filter) {
-  let filteredList;
-  if (filter.length === 0) {
-    filteredList = data;
-  } else {
-    filteredList = data.filter((country) => country.name.toLowerCase().includes(filter) ||
-      country.alpha2Code.toLowerCase().includes(filter));
-  }
+export function getFilteredList(filter) {
   return {
     type: GET_FILTERED_LIST,
-    payload: filteredList
+    filter
   }
-
 }
 
 export function getDataEpic(action$) {

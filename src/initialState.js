@@ -7,7 +7,6 @@ export default {
         isError: false
     },
     filterReducer: {
-        filtered: [],
-        term: ''
+        filter: ''
     }
 }

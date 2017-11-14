@@ -63,15 +63,14 @@ class CountryDetail extends React.Component {
         )
     };
 }
-const { array, func, object } = PropTypes;
+const { array, bool, func, object } = PropTypes;
 
 CountryDetail.propTypes = {
     countries: array,
     flights: array,
-    fetchData: func,
-    saveFlights: func,
-    saveWeather: func,
-    match: object
+    isLoading: bool,
+    getDataRequested: func,
+    weather: array
 };
 
 const mapStateToProps = (state) => {
