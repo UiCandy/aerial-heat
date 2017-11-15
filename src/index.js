@@ -7,14 +7,14 @@ import { connect, Provider } from 'react-redux';
 import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
 import { Link, Switch, Route } from 'react-router-dom';
-import { createSelector } from 'reselect';
 import Rx from 'rxjs';
 
 import { Card, Container, Dimmer, Grid, Header, Input, Loader } from 'semantic-ui-react';
+import api from './api';
 import initialState from './initialState';
 import * as actions from './actions';
 import { reducer } from './reducer';
-import api from './api';
+import filteredList from './selectors';
 import CountryDetail from './single';
 
 const history = createHistory();
@@ -89,15 +89,6 @@ class Countries extends React.Component {
     );
   }
 }
-
-const filteredList = createSelector(
-  (state) => state.filterReducer.filter.toLowerCase(),
-  (state) => state.dataReducer.countries,
-  (filter, countries) => countries.filter(country => {
-    return country.name.toLowerCase().includes(filter) ||
-          country.alpha2Code.toLowerCase().includes(filter);
-  })
-);
 
 const mapStateToProps = (state) => {
   return {

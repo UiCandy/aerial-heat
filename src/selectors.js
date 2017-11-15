@@ -1,11 +1,12 @@
 import { createSelector } from 'reselect';
 
-const countriesSelector = state => state.countries;
+const filteredList = createSelector(
+    (state) => state.filterReducer.filter.toLowerCase(),
+    (state) => state.dataReducer.countries,
+    (filter, countries) => countries.filter(country => {
+      return country.name.toLowerCase().includes(filter) ||
+            country.alpha2Code.toLowerCase().includes(filter);
+    })
+  );
 
-const filter = () => {
-    console.log(countriesSelector);
-};
-export default createSelector(
-    countriesSelector,
-    filter
-);
+  export default filteredList;
