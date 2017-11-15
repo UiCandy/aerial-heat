@@ -5,7 +5,8 @@ import api from './api';
 import * as actions from './actions';
 
 
-import { Button, Card, Container, Dimmer, Flag, Icon, Grid, Header, Loader } from 'semantic-ui-react';
+import { Button, Card, Container, Dimmer, Flag, Icon, Grid, Header, Loader, Message } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 
 
 class CountryDetail extends React.Component {
@@ -14,7 +15,7 @@ class CountryDetail extends React.Component {
     }
 
     componentDidMount() {
-        this.props.getDataRequested(api.flights);
+        this.props.getDataRequested(api.flights, this.props.match.params.name);
     }
 
     getWeather = () => {
@@ -29,7 +30,7 @@ class CountryDetail extends React.Component {
         return(
             <Container>
                 <Header dividing={true}>
-                    <h1><Flag name={country.alpha2Code.toLowerCase()} />{country.name}</h1>
+                    <h1><Link to="http://localhost:8100/"><Flag name={country.alpha2Code.toLowerCase()} />{country.name}</Link></h1>
                 </Header>
                 <Grid columns={4}>
                     {flights.map((flight, i) => {
@@ -58,6 +59,11 @@ class CountryDetail extends React.Component {
                     <Dimmer active={isLoading} inverted>
                         <Loader />
                     </Dimmer>
+                    {!flights.length && !isLoading ? 
+                    <Message icon="compass" 
+                        header="Sorry, there are no flights currently in this country's airspace!"
+                        content="Please try again later or another country."
+                    /> : ''}
                 </Grid>   
             </Container>
         )
@@ -84,7 +90,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getDataRequested: (url) => dispatch(actions.getDataRequested(url))
+        getDataRequested: (url, country) => dispatch(actions.getDataRequested(url, country))
     }
 };
 

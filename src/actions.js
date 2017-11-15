@@ -1,21 +1,24 @@
 import { ajax } from 'rxjs/observable/dom/ajax';
+import { slugify, regExp } from './helpers';
 
 export const GET_DATA_REQUESTED = 'GET_DATA_REQUESTED';
 export const GET_DATA_DONE = 'GET_DATA_DONE';
 export const GET_DATA_FAILED = 'GET_DATA_FAILED';
 export const GET_FILTERED_LIST = 'GET_FILTERED_LIST';
 
-export function getDataRequested(url) {
+export function getDataRequested(url, country) {
   return {
     type: GET_DATA_REQUESTED,
-    url
+    url,
+    country
   };
 }
 
-export function getDataDone(data) {
+export function getDataDone(data, country) {
   let selector;
   if (data.states) {
-    data = data.states.filter(flight => flight[2] == 'Argentina');
+    const slug = slugify(country).split('-');
+    data = data.states.filter(flight => regExp(slug).test(flight[2]));
     selector = 'flights';
   }
   else if (data[0].capital) {
@@ -47,9 +50,9 @@ export function getFilteredList(filter) {
 
 export function getDataEpic(action$) {
   return action$.ofType(GET_DATA_REQUESTED)
-    .mergeMap(action =>
-      ajax.getJSON(action.url)
-        .map(response => getDataDone(response))
+    .mergeMap(({url, country}) =>
+      ajax.getJSON(url)
+        .map(response => getDataDone(response, country))
         .catch(error => getDataFailed(error))
     );
 }
