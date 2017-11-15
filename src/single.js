@@ -30,7 +30,10 @@ class CountryDetail extends React.Component {
         return(
             <Container>
                 <Header dividing={true}>
-                    <h1><Link to="http://localhost:8100/"><Flag name={country.alpha2Code.toLowerCase()} />{country.name}</Link></h1>
+                    <h1>    
+                        <Flag name={country.alpha2Code.toLowerCase()} />{country.name}
+                        <Link to="/" className="home"><Icon name="home" /></Link>
+                    </h1>
                 </Header>
                 <Grid columns={4}>
                     {flights.map((flight, i) => {
