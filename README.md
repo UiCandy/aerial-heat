@@ -2,7 +2,7 @@
 
 Aerial Heat by Rishav Sharma
 
-Using React, Redux, Redux-observable
+Using React, Redux, Redux-observable, Reselect.
 
 To run the App:
 

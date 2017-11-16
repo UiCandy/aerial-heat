@@ -1,4 +1,4 @@
-import { ajax } from 'rxjs/observable/dom/ajax';
+import { Observable } from 'rxjs/Observable';
 import { slugify, regExp } from './helpers';
 
 export const GET_DATA_REQUESTED = 'GET_DATA_REQUESTED';
@@ -16,6 +16,9 @@ export function getDataRequested(url, country) {
 
 export function getDataDone(data, country) {
   let selector;
+  if(data.main){
+    data = [data.main];
+  }
   if (data.states) {
     const slug = slugify(country).split('-');
     data = data.states.filter(flight => regExp(slug).test(flight[2]));
@@ -48,10 +51,16 @@ export function getFilteredList(filter) {
   }
 }
 
+const fetchData = (url) => {
+  const request = fetch(url)
+    .then(response => response.json());
+  return Observable.from(request);
+};
+
 export function getDataEpic(action$) {
   return action$.ofType(GET_DATA_REQUESTED)
     .mergeMap(({url, country}) =>
-      ajax.getJSON(url)
+      fetchData(url)
         .map(response => getDataDone(response, country))
         .catch(error => getDataFailed(error))
     );

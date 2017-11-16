@@ -18,12 +18,17 @@ import filteredList from './selectors';
 import CountryDetail from './single';
 
 const history = createHistory();
-
+const reactRouterMiddleware = routerMiddleware(history);
 const epicMiddleware = createEpicMiddleware(actions.getDataEpic);
+
+const middlewares = [
+  epicMiddleware,
+  reactRouterMiddleware
+]
 const store = createStore(
   reducer,
   initialState,
-  applyMiddleware(epicMiddleware)
+  applyMiddleware(...middlewares)
 );
 
 class Countries extends React.Component {

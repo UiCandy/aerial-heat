@@ -1,6 +1,7 @@
 @import '//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css';
 .ui.grid {
     position: relative;
+    min-height: 40vh;
 }
 
 .search .card {
